@@ -49,25 +49,33 @@ int main() {
         return 1;
     }
 
-    int buffer_size = 100;
+    const int buffer_size = 100;
     char line_buffer[buffer_size];
     FITNESS_DATA fitnessDataArray[MAX_RECORDS];
-    int recordCount = 0;
+    int dataCount = 0;
 
-    while (fgets(line_buffer, buffer_size, file) != NULL && recordCount < MAX_RECORDS) {
-        char date[11], time[6], steps[10];
+    while (fgets(line_buffer, buffer_size, file) != NULL) {
+        char date[11];
+        char time[6];
+        char steps[10];
+        
         tokeniseRecord(line_buffer, ",", date, time, steps);
-        strcpy(fitnessDataArray[recordCount].date, date);
-        strcpy(fitnessDataArray[recordCount].time, time);
-        fitnessDataArray[recordCount].steps = atoi(steps);
-        recordCount++;
-    }
 
-    // Printing the stored data
-    for (int i = 0; i < recordCount; i++) {
+        FITNESS_DATA data;
+        strcpy(data.date, date);
+        strcpy(data.time, time);
+        data.steps = atoi(steps);
+        fitnessDataArray[dataCount] = data;
+        dataCount++;
+        }
+ 
+         for (int i = 0; i < dataCount; i++) {
         printf("Date: %s, Time: %s, Steps: %d\n", fitnessDataArray[i].date, fitnessDataArray[i].time, fitnessDataArray[i].steps);
-    }
+         }
+
 
     fclose(file);
     return 0;
 }
+
+
