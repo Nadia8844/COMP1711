@@ -47,9 +47,6 @@ int main()
     // get filename from the user
     printf("Please enter the name of the data file: ");
 
-    // these lines read in a line from the stdin (where the user types)
-    // and then take the actual string out of it
-    // this removes any spaces or newlines.
     fgets(line, buffer_size, stdin);
     sscanf(line, " %s ", filename);
 
@@ -106,6 +103,7 @@ int main()
 
         case 'C':
         case 'c':
+          
 
             break;
 
@@ -121,7 +119,7 @@ int main()
 
         case 'F':
         case 'f':
-            // Implement logic to find the longest continuous period above 500 steps
+         
             break;
 
         case 'Q':
