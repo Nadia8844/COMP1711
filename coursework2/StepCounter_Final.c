@@ -1,6 +1,8 @@
+#define "FitnessDataStruct.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 
 #define MAX_RECORDS 100
 #define buffer_size 100
