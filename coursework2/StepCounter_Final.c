@@ -1,10 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "FitnessDataStruct.h"
 
 #define MAX_RECORDS 100
 #define buffer_size 100
+
+// Define an appropriate struct
+typedef struct {
+    char date[11];
+    char time[6];
+    int steps;
+} FITNESS_DATA;
 
 void tokeniseRecord(const char *input, const char *delimiter, char *date, char *time, int *steps) {
 
@@ -87,6 +93,7 @@ int main() {
 
             case 'B':
             case 'b':
+            
                 printf("Total records: %d\n", counter);
                 fclose(input);
                 break;
