@@ -1,58 +1,63 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
+#include "FitnessDataStruct.h"  // Include the header file
+#define MAX_RECORDS 1000
+#define buffer_size 1000
 
-#define MAX_RECORDS 100
-#define BUFFER_SIZE 100
+// Struct moved to header file
 
-// Define an appropriate struct
-typedef struct {
-    char date[11];
-    char time[6];
-    int steps;
-} FITNESS_DATA;
+// Define any additional variables here
+// Global variables for filename and FITNESS_DATA array
 
-void tokeniseRecord(const char *input, const char *delimiter, char *date, char *time, int *steps) {
+// Helper function prototype
+void tokeniseRecord(const char *input, const char *delimiter, char *date, char *time, char *steps);
+
+// This is your helper function. Do not change it in any way.
+// Inputs: character array representing a row; the delimiter character
+// Outputs: date character array; time character array; steps character array
+void tokeniseRecord(const char *input, const char *delimiter,
+                    char *date, char *time, char *steps) {
+    // Create a copy of the input string as strtok modifies the string
     char *inputCopy = strdup(input);
 
-    if (inputCopy == NULL) {
-        fprintf(stderr, "Error: Memory allocation failed\n");
-        return;
-    }
-
+    // Tokenize the copied string
     char *token = strtok(inputCopy, delimiter);
-
     if (token != NULL) {
         strcpy(date, token);
     }
 
     token = strtok(NULL, delimiter);
-
     if (token != NULL) {
         strcpy(time, token);
     }
 
     token = strtok(NULL, delimiter);
-
     if (token != NULL) {
-        *steps = atoi(token);
+        strcpy(steps, token);
     }
 
+    // Free the duplicated string
     free(inputCopy);
 }
 
-int main() {
-    FITNESS_DATA fitnessdata[MAX_RECORDS];
 
-    char line[BUFFER_SIZE];
-    char filename[BUFFER_SIZE];
+int main() 
+{
+   FITNESS_DATA fitnessdata[MAX_RECORDS];
+
+    char line[buffer_size];
+    char filename[buffer_size];
+    double meanFloat = 0.0;
 
     FILE *input = NULL;
 
     char choice;
     int counter = 0;
 
-    while (1) {
+    while (1)
+    {
         printf("Menu Options:\n");
         printf("A: Specify the filename to be imported\n");
         printf("B: Display the total number of records in the file\n");
@@ -64,52 +69,51 @@ int main() {
 
         printf("Enter choice: ");
         choice = getchar();
-
-        // Clear input buffer
         while (getchar() != '\n');
 
-        switch (choice) {
+        switch (choice)
+        {
             case 'A':
             case 'a':
-                printf("Input filename: ");
-                fgets(line, BUFFER_SIZE, stdin);
-
-                if (sscanf(line, " %99s", filename) != 1) {
-                    printf("Error: Invalid input for filename\n");
-                    break;
-                }
+            printf("Input filename: ");
+            fgets(line, 200, stdin);
+            sscanf(line, " %s ", filename);
 
                 input = fopen(filename, "r");
-                if (!input) {
-                    printf("Error: File could not be opened\n");
-                    return 1;
-                }
+                    if (!input) {
+                        printf("Error: File could not be opened\n");
+                        return 1;}
+                    
 
                 counter = 0;
-                while (fgets(line, BUFFER_SIZE, input) && counter < MAX_RECORDS) {
-                    char date[11], time[6];
-                    int steps;
+                while (fgets(line, buffer_size, input)) {
+                    if (counter >= MAX_RECORDS) {
+                        printf("Maximum records exceeded. Data truncated.\n");
+                        break;
+                    }
 
-                    tokeniseRecord(line, ",", date, time, &steps);
+                    char date[11], time[6], stepss[100];
+                    
+                    tokeniseRecord(line, ",", date, time, stepss);
 
                     strcpy(fitnessdata[counter].date, date);
                     strcpy(fitnessdata[counter].time, time);
-                    fitnessdata[counter].steps = steps;
+                    fitnessdata[counter].steps = atoi(stepss);
 
                     counter++;
                 }
-
                 fclose(input);
                 printf("File successfully loaded.\n");
                 break;
-
+            
             case 'B':
             case 'b':
+            
                 printf("Total records: %d\n", counter);
                 break;
 
-            case 'C':
-            case 'c':
+             case 'C':
+             case 'c':
                 if (counter == 0) {
                     printf("No data available. Load data first (Option A).\n");
                 } else {
@@ -141,55 +145,67 @@ int main() {
                     printf("Largest steps: %s %s\n", largestStepsSlot.date, largestStepsSlot.time);
                 }
                 break;
-
             case 'E':
             case 'e':
-                if (counter == 0) {
-                    printf("No data available. Load data first (Option A).\n");
-                } else {
-                    long long totalSteps = 0; // Use long long to handle large totals
+            input = fopen(filename, "r");
+            if (!input) {
+            printf("Error opening file\n");
+             break;
+            }
 
-                    for (int i = 0; i < counter; i++) {
-                        totalSteps += fitnessdata[i].steps;
-                    }
+            meanFloat = 0.0;
+            counter = 0;
 
-                    double meanSteps = (double)totalSteps / counter;
-                    int roundedMean = (int)(meanSteps + 0.5); // Round to the nearest integer
+            char date[20], time[20], stepss[10000];
 
-                    printf("Mean step count: %d\n", roundedMean);
-                }
-                break;
+            while (fgets(line, buffer_size, input)) {
+            tokeniseRecord(line, ",", date, time, stepss);
+            fitnessdata[counter].steps = atoi(stepss);
+            meanFloat += fitnessdata[counter].steps;
+            counter++;
+             }
+
+            fclose(input);
+
+            if (counter == 0) {
+        printf("No records in the file\n");
+        } else {
+            meanFloat /= counter;
+            int meansteps = (int)meanFloat;
+            printf("Mean step count: %d\n", meansteps);
+        }   
+        break;
+                
 
             case 'F':
             case 'f':
                 if (counter == 0) {
                     printf("No data available. Load data first (Option A).\n");
                 } else {
-                    int currentLength = 0;
-                    int maxLength = 0;
+                    int currentlength = 0;
+                    int maxlength = 0;
                     int startIdx = 0;
 
                     for (int i = 0; i < counter; i++) {
                         if (fitnessdata[i].steps > 500) {
-                            currentLength++;
+                            currentlength++;
                         } else {
                             // Check if the current period is longer than the maximum
-                            if (currentLength > maxLength) {
-                                maxLength = currentLength;
-                                startIdx = i - maxLength;
+                            if (currentlength > maxlength) {
+                                maxlength = currentlength;
+                                startIdx = i - maxlength;
                             }
 
-                            currentLength = 0;
+                            currentlength = 0;
                         }
                     }
 
-                    if (currentLength > maxLength) {
-                        startIdx = counter - currentLength;
+                    if (currentlength > maxlength) {
+                        startIdx = counter - maxlength;
                     }
 
                     printf("Longest period start: %s %s\n", fitnessdata[startIdx].date, fitnessdata[startIdx].time);
-                    printf("Longest period end: %s %s\n", fitnessdata[startIdx + maxLength - 1].date,
-                           fitnessdata[startIdx + maxLength - 1].time);
+                    printf("Longest period end: %s %s\n", fitnessdata[startIdx + maxlength - 1].date, fitnessdata[startIdx + maxlength - 1].time);
                 }
                 break;
 
@@ -200,7 +216,11 @@ int main() {
             default:
                 printf("Invalid choice\n");
                 break;
-        }
-    }
-}
+        
 
+
+                    
+        }
+                
+    }
+ }

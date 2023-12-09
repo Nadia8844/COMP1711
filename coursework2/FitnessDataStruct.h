@@ -5,13 +5,12 @@
 
 // Define an appropriate struct
 typedef struct {
-    char date[11];
-    char time[6];
-    int steps;
+	char date[11];
+	char time[6];
+	int steps;
 } FITNESS_DATA;
 
-// Helper function prototype
-void tokeniseRecord(const char *input, const char *delimiter, char *date, char *time, int *steps);
+// Helper function prototypes
+void tokeniseRecord(const char *input, const char *delimiter, char *date, char *time, char *steps);
 
 #endif // FITNESS_DATA_STRUCT_H
-
