@@ -7,7 +7,7 @@ typedef struct {
     char date[11];
     char time[6];
     int steps;
-} FitnessData;
+} FITNESS_DATA;
 
 // Function to tokenize a record
 void tokeniseRecord(char *record, char delimiter, char *date, char *time, int *steps) {
@@ -34,9 +34,9 @@ void tokeniseRecord(char *record, char delimiter, char *date, char *time, int *s
     }
 }
 
-// Function to compare two FitnessData records for sorting
+// Function to compare two FITNESS_DATA records for sorting
 int compareRecords(const void *a, const void *b) {
-    return ((FitnessData *)b)->steps - ((FitnessData *)a)->steps;
+    return ((FITNESS_DATA *)b)->steps - ((FITNESS_DATA *)a)->steps;
 }
 
 int main() {
@@ -55,11 +55,12 @@ int main() {
     }
 
     // Read the file into an array
-    FitnessData fitnessRecords[100]; // Adjust the size as needed
+    FITNESS_DATA fitnessRecords[100]; // Adjust the size as needed
     int recordCount = 0;
     char line[100]; // Adjust the size as needed
 
     while (fgets(line, sizeof(line), file) != NULL && recordCount < 100) {
+        // Use the tokeniseRecord function
         tokeniseRecord(line, ',', fitnessRecords[recordCount].date, fitnessRecords[recordCount].time, &fitnessRecords[recordCount].steps);
         recordCount++;
     }
@@ -67,7 +68,7 @@ int main() {
     fclose(file);
 
     // Step 2: Sort the data in descending order of steps
-    qsort(fitnessRecords, recordCount, sizeof(FitnessData), compareRecords);
+    qsort(fitnessRecords, recordCount, sizeof(FITNESS_DATA), compareRecords);
 
     // Step 3: Write out the sorted data to a new file with .tsv extension
     strcat(filename, ".tsv");
