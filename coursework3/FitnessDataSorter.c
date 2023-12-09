@@ -20,8 +20,17 @@ void tokeniseRecord(char *record, char delimiter, char *date, char *time, int *s
             ptr = strtok(NULL, &delimiter);
             if (ptr != NULL) {
                 *steps = atoi(ptr);
+            } else {
+                fprintf(stderr, "Error: invalid file (missing steps)\n");
+                exit(1);
             }
+        } else {
+            fprintf(stderr, "Error: invalid file (missing time)\n");
+            exit(1);
         }
+    } else {
+        fprintf(stderr, "Error: invalid file (missing date)\n");
+        exit(1);
     }
 }
 
