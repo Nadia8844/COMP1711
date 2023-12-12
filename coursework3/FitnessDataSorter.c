@@ -12,17 +12,18 @@ typedef struct {
 
 // Function to tokenize a record
 void tokeniseRecord(char *record, char delimiter, char *date, char *time, int *steps) {
-    char *ptr = strtok(record, &delimiter);
+    char *ptr = strtok(record, ",");
+
     if (ptr != NULL) {
         strcpy(date, ptr);
-        ptr = strtok(NULL, &delimiter);
+        ptr = strtok(NULL, ",");
         if (ptr != NULL) {
             strcpy(time, ptr);
-            ptr = strtok(NULL, &delimiter);
+            ptr = strtok(NULL, ",");
             if (ptr != NULL) {
                 // Check for non-numeric characters in steps
                 for (int i = 0; ptr[i] != '\0'; i++) {
-                    if (!isdigit((unsigned char)ptr[i])) { // Ensure that isdigit is applied to an unsigned char
+                    if (!isdigit((unsigned char)ptr[i])) {
                         fprintf(stderr, "Error: invalid file (non-numeric steps)\n");
                         exit(1);
                     }
@@ -41,6 +42,7 @@ void tokeniseRecord(char *record, char delimiter, char *date, char *time, int *s
         exit(1);
     }
 }
+
 
 // Function to compare two FITNESS_DATA records for sorting
 int compareRecords(const void *a, const void *b) {
