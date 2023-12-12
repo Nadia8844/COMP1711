@@ -30,12 +30,12 @@ void tokeniseRecord(char *record, char delimiter, char *date, char *time, int *s
 bool isValidRecord(char *record, char delimiter) {
     char date[11], time[6];
     int steps;
-    char *tmp = strdup(record);  // Create a temporary copy of record for validation
+    char *tmp = strdup(record);  
 
     tokeniseRecord(tmp, delimiter, date, time, &steps);
-    free(tmp);  // Free the temporary copy
+    free(tmp); 
 
-    // Check if any field is empty or if steps are not valid (atoi returns 0 for invalid conversion)
+    
     if (date[0] == '\0' || time[0] == '\0' || steps == 0) {
         return false;
     }
@@ -43,7 +43,7 @@ bool isValidRecord(char *record, char delimiter) {
     return true;
 }
 
-// Function to compare fitness data (for sorting)
+
 int compareFitnessData(const void *a, const void *b) {
     FitnessData *dataA = (FitnessData *)a;
     FitnessData *dataB = (FitnessData *)b;
@@ -77,14 +77,11 @@ int main() {
     }
     fclose(file);
 
-    // Sort the data
     qsort(data, count, sizeof(FitnessData), compareFitnessData);
 
-    // Create output file name
     char outputFilename[260];
     snprintf(outputFilename, sizeof(outputFilename), "%s.tsv", filename);
 
-    // Write sorted data to new file
     FILE *outputFile = fopen(outputFilename, "w");
     for (int i = 0; i < count; i++) {
         fprintf(outputFile, "%s\t%s\t%d\n", data[i].date, data[i].time, data[i].steps);
